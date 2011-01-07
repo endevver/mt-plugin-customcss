@@ -1,9 +1,3 @@
-#
-# README file for the CustomCSS Plugin for Movable Type
-#
-
-# Overview
-
 This plugin was born out of the need and desire to:
 
 * Provide users with the ability to customize the CSS of a blog, 
@@ -79,7 +73,7 @@ In an index template in the `<head>` element:
       <$mt:CustomCSS$>
     </style>
 
-# DESIGNER GUIDE
+# Designer Guide
 
 This plugin allows designers to designate templates within their
 template sets which utilize or depend upon user-provided CSS. 
@@ -111,6 +105,6 @@ The operative element being the last line above:
 The assumption of course being that the template identified by this
 flag contains the `<$mt:CustomCSS$>` tag.
 
-# LICENSE
+# License
 
 This plugin is licensed under the GPLv3.
