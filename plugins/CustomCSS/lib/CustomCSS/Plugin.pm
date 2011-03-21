@@ -110,8 +110,8 @@ sub save {
     if (ref $tmpl_hash eq 'ARRAY' && $tmpl_hash->[0] eq '*') {
         $tmpl_hash = MT->registry("default_templates");
     }
-    use Data::Dumper;
-    MT->log( Dumper($tmpl_hash) );
+    #use Data::Dumper;
+    #MT->log( Dumper($tmpl_hash) );
     my $tmpls = $tmpl_hash->{'index'};
     foreach my $t (keys %$tmpls) {
         if ($tmpls->{$t}->{custom_css}) {

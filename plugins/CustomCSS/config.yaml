@@ -1,6 +1,8 @@
 name: Custom CSS
 description: "Adds a large Custom CSS editing capability accessible from your Design menu."
-version: 0.97
+version: 1.0
+author_name: Endevver
+author_link: http://endevver.com
 
 applications:
   cms:
