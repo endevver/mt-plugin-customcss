@@ -39,9 +39,19 @@ sub uses_custom_css {
 }
 
 sub edit {
-    my $app = shift;
+    my $app     = shift;
     my ($param) = @_;
-    my $q = $app->{query};
+    my $q       = $app->{query};
+
+    # Custom CSS works at the blog level only, so if the user is clicking over
+    # to the system level, just redirect to the blog dashboard.
+    if ( !$app->blog ) {
+        $app->redirect(
+            $app->uri(
+                'mode' => 'dashboard',
+            )
+        );
+    }
 
     $param ||= {};
 
