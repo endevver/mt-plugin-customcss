@@ -1,0 +1,14 @@
+<mtapp:Setting
+    id="force_enable_custom_css"
+    label="Enable Custom CSS"
+    hint="If you utilize a template set for which this plugin has been activated, then the checkbox above will have no effect."
+    show_hint="1">
+    <input type="checkbox"
+        name="force_enable_custom_css"
+        id="force_enable_custom_css"
+        value="1"
+        <mt:If name="force_enable_custom_css">checked</mt:If> />
+    <label for="force_enable_custom_css">
+      Forcibly display the "Customize Stylesheet" menu option for this blog.
+    </label>
+</mtapp:Setting>

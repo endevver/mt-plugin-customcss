@@ -41,7 +41,7 @@ sub uses_custom_css {
 sub edit {
     my $app     = shift;
     my ($param) = @_;
-    my $q       = $app->{query};
+    my $q       = $app->can('query') ? $app->query : $app->param;
 
     # Custom CSS works at the blog level only, so if the user is clicking over
     # to the system level, just redirect to the blog dashboard.
@@ -105,8 +105,8 @@ sub edit {
 }
 
 sub save {
-    my $app = shift;
-    my $q = $app->{query};
+    my $app  = shift;
+    my $q    = $app->can('query') ? $app->query : $app->param;
     my $blog = MT::Blog->load($q->param('blog_id'));
 
     my $css = $q->param('text');

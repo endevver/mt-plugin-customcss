@@ -32,13 +32,12 @@ page_actions:
             return CustomCSS::Plugin::uses_custom_css();
           }
 
-options:
-  force_enable_custom_css:
-    label: '<span style="white-space: nowrap;">Enable Custom CSS?</span>'
-    hint: 'This setting will forcibly display the "Customize CSS" menu option for the blog in which this is checked. If you utilize a template set for which this plugin has been activated, then the setting above will have no effect.'
-    tag: 'IfSuppressCreateEntry?'
-    scope: blog
-    type: checkbox
+settings:
+    force_enable_custom_css:
+        default: 0
+        scope: blog
+
+blog_config_template: config.mtml
 
 tags:
   function:
