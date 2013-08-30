@@ -3,38 +3,41 @@
 package CustomCSS::Plugin;
 
 use strict;
+use warnings;
 
-use Carp qw( croak );
-use MT::Util qw( relative_date offset_time offset_time_list epoch2ts ts2epoch format_ts );
-
-sub plugin {
-    return MT->component('CustomCSS');
-}
-
-sub id { 'custom_css' }
-
+# Check to see if this theme has custom CSS enabled. If so, show the Customize
+# Stylesheet option in the Design menu.
 sub uses_custom_css {
-#    local $@;
-    my $blog = MT->instance->blog;
+    my $app  = MT->instance;
+    my $blog = $app->blog;
 
+    # Don't show at the system level.
     return 0 if !$blog;
 
     # If the user has forcibly enabled custom css, then return true.
-    return 1 if plugin()->get_config_value('force_enable_custom_css','blog:'.$blog->id);
- 
-    # If the user is utilizing a template set for which custom css has been enabled
-    # for an index template, return true.
-    my $ts = MT->instance->blog->template_set;
-    my $app = MT::App->instance;
+    return 1 if $app->component('customcss')->get_config_value(
+        'force_enable_custom_css',
+        'blog:' . $blog->id
+    );
+
+    # Grab the templates for the template set used for this blog.
+    my $ts = $app->blog->template_set;
     my $tmpl_hash = $app->registry('template_sets',$ts,'templates');
     if (ref($tmpl_hash) eq 'ARRAY' && $tmpl_hash->[0] eq '*') {
-        $tmpl_hash = MT->registry("default_templates");
+        $tmpl_hash = $app->registry("default_templates");
     }
+
+    # If a bunch of templates couldn't be found, we don't want to display the
+    # menu option.
     return 0 if (ref($tmpl_hash) ne 'HASH');
+
+    # If the user is utilizing a template set for which custom css has been
+    # enabled for an index template, return true.
     my $tmpls = $tmpl_hash->{'index'};
     foreach my $t (keys %$tmpls) {
         return 1 if $tmpls->{$t}->{'custom_css'};
     }
+
     return 0;
 }
 
@@ -58,17 +61,25 @@ sub edit {
     # to trigger autosave logic in main edit routine
     $param->{autosave_support} = 1;
 
-    my $blog = $app->blog;
-    my $cfg = $app->config;
-    my $perms = $app->permissions;
+    my $blog        = $app->blog;
+    my $cfg         = $app->config;
+    my $perms       = $app->permissions;
     my $can_preview = 0;
 
+    # The search_label and object_type parameters are used to help populate the
+    # Search box.
     $param->{search_label} = $app->translate('Templates');
     $param->{object_type}  = 'template';
-    $param->{saved} = 1 if $q->param('saved');
-    $param->{saved_rebuild} = 1 if $q->param('saved_rebuild');
+    $param->{saved}        = 1 if $q->param('saved');
+    $param->{screen_id}    = "edit-template-stylesheet";
 
-    # Populate structure for template snippets
+    my $scope = "blog:" . $blog->id;
+    $param->{'text'}
+        = $app->component('customcss')->get_config_value('custom_css',$scope);
+
+    $param->{template_lang} = 'css';
+
+    # Populate structure for template snippets; only displayed in MT4.
     if ( my $snippets = $app->registry('template_snippets') || {} ) {
         my @snippets;
         for my $snip_id ( keys %$snippets ) {
@@ -86,22 +97,6 @@ sub edit {
         $param->{template_snippets} = \@snippets;
     }
 
-    $param->{screen_id} = "edit-template-stylesheet";
-
-    # if unset, default to 30 so if they choose to enable caching,
-    # it will be preset to something sane.
-    $param->{cache_expire_interval} ||= 30;
-
-    $param->{dirty} = 1
-        if $app->param('dirty');
-
-    my $plugin = plugin();
-    my $scope = "blog:" . $blog->id;
-    $param->{'text'} = $plugin->get_config_value('custom_css',$scope);
-
-
-    $param->{template_lang} = 'css';
-
     my $tmpl_name = 'custom_css.tmpl';
     $tmpl_name = 'custom_css_mt4.tmpl'
         if $app->product_version =~ /^4/;
@@ -116,27 +111,30 @@ sub save {
 
     my $css = $q->param('text');
 
-    my $plugin = plugin();
     my $scope = "blog:" . $blog->id;
-    $plugin->set_config_value('custom_css',$css,$scope);
+    $app->component('customcss')->set_config_value('custom_css',$css,$scope);
 
-    my $ts = MT->instance->blog->template_set;
+    my $ts = $app->instance->blog->template_set;
     my $tmpl_hash = $app->registry('template_sets',$ts,'templates');
     if (ref $tmpl_hash eq 'ARRAY' && $tmpl_hash->[0] eq '*') {
-        $tmpl_hash = MT->registry("default_templates");
+        $tmpl_hash = $app->registry("default_templates");
     }
     #use Data::Dumper;
     #MT->log( Dumper($tmpl_hash) );
     my $tmpls = $tmpl_hash->{'index'};
     foreach my $t (keys %$tmpls) {
         if ($tmpls->{$t}->{custom_css}) {
-            my $tmpl = MT->model('template')->load({
+            my $tmpl = $app->model('template')->load({
                 blog_id => $blog->id,
                 identifier => $t,
             });
-            MT->log({ 
-                blog_id => $blog->id,
-                message => 'Custom CSS plugn is republishing ' . $tmpl->name,
+            $app->log({
+                blog_id   => $blog->id,
+                message   => 'Custom CSS plugn is republishing ' . $tmpl->name,
+                author_id => $app->user->id,
+                level     => $app->model('log')->INFO(),
+                class     => "publish",
+                category  => 'rebuild',
             });
             $app->rebuild_indexes(
                 Blog     => $blog,
@@ -147,14 +145,6 @@ sub save {
     }
     $app->add_return_arg( saved => 1 );
     return $app->call_return;
-}
-
-sub custom_css {
-    my ($ctx, $args) = @_;
-    my $blog = $ctx->stash('blog');
-    my $plugin = plugin();
-    my $scope = "blog:" . $blog->id;
-    return $plugin->get_config_value('custom_css',$scope);
 }
 
 1;

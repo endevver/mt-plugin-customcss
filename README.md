@@ -21,8 +21,8 @@ users to a screen devoted to editing a site's stylesheet.
 
 Prior to installation, the following requirements must be satisfied:
 
-  * User has MovableType 4.2 or later installed
-    - it could work on 4.0, but it has not been tested, nor is it supported.
+* Movable Type 4.2+
+* Movable Type 5.0+
 
 # Installation
 

@@ -1,4 +1,6 @@
-name: Custom CSS
+name:        Custom CSS
+key:         customcss
+id:          customcss
 description: "Adds a large Custom CSS editing capability accessible from your Design menu."
 version: 1.0
 author_name: Endevver
@@ -7,14 +9,14 @@ plugin_link: https://github.com/endevver/mt-plugin-customcss
 
 applications:
   cms:
-    menus: 
+    menus:
       design:custom_css:
-        label: 'Customize Stylesheet'
-        order: 1000
-        mode: custom_css_edit
-        view: blog
+        label:      'Customize Stylesheet'
+        order:      1000
+        mode:       custom_css_edit
+        view:       blog
         permission: edit_templates
-        condition: $CustomCSS::CustomCSS::Plugin::uses_custom_css
+        condition:  $CustomCSS::CustomCSS::Plugin::uses_custom_css
     methods:
       custom_css_edit: $CustomCSS::CustomCSS::Plugin::edit
       custom_css_save: $CustomCSS::CustomCSS::Plugin::save
@@ -24,10 +26,10 @@ page_actions:
     custom_css:
       label: 'Customize Stylesheet'
       order: 102
-      mode: 'custom_css_edit'
+      mode:  'custom_css_edit'
       condition: >
           sub {
-            my $plugin = MT->component('CustomCSS');
+            my $plugin = MT->component('customcss');
             return 0 if !$plugin;
             require CustomCSS::Plugin;
             return CustomCSS::Plugin::uses_custom_css();
