@@ -3,6 +3,7 @@ description: "Adds a large Custom CSS editing capability accessible from your De
 version: 1.0
 author_name: Endevver
 author_link: http://endevver.com
+plugin_link: https://github.com/endevver/mt-plugin-customcss
 
 applications:
   cms:
