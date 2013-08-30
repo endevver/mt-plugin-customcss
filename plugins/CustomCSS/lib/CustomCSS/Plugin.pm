@@ -101,7 +101,12 @@ sub edit {
 
 
     $param->{template_lang} = 'css';
-    return $app->load_tmpl( 'custom_css.tmpl', $param );
+
+    my $tmpl_name = 'custom_css.tmpl';
+    $tmpl_name = 'custom_css_mt4.tmpl'
+        if $app->product_version =~ /^4/;
+
+    return $app->load_tmpl( $tmpl_name, $param );
 }
 
 sub save {
