@@ -1,63 +1,12 @@
 <mt:setvarblock name="page_title"><__trans phrase="Edit Custom CSS"></mt:setvarblock>
-<mt:setvarblock name="html_title"><__trans phrase="Edit Custom CSS"></mt:setvarblock>
 <mt:var name="position_actions_bottom" value="1">
 <mt:setvarblock name="system_msg">
-    <mt:unless name="recovered_object">
-        <mt:if name="autosaved_object_exists">
-            <mtapp:statusmsg
-                id="autosaved-object-exists"
-                can_close="1"
-                class="info">
-                <__trans phrase="A saved version of this [_1] was auto-saved [_3]. <a href="[_2]">Recover auto-saved content</a>" params="<mt:var name="object_label">%%<mt:var name="script_url">?__mode=view&amp;_type=template&amp;&amp;_recover=1&amp;blog_id=<mt:var name="blog_id" escape="url"><mt:if name="id">&amp;id=<mt:var name="id" escape="url"></mt:if>%%<mt:If name="blog_id"><mt:date ts="$autosaved_object_ts" relative="1" offset_blog_id="<$mt:var name="blog_id"$>"></mt:If>">
-            </mtapp:statusmsg>
-        </mt:if>
-    </mt:unless>
-    <mt:if name="recovered_object">
-        <mtapp:statusmsg
-            id="recovered-object"
-            class="success">
-            <__trans phrase="You have successfully recovered your saved [_1]." params="<mt:var name="object_label">">
-        </mtapp:statusmsg>
-    </mt:if>
-    <mt:if name="recovered_failed">
-        <mtapp:statusmsg
-            id="recovered-failed"
-            class="error">
-            <__trans phrase="An error occurred while trying to recover your saved [_1]." params="<mt:var name="object_label">">
-        </mtapp:statusmsg>
-    </mt:if>
     <mt:if name="saved">
-        <mt:if name="error">
-            <mtapp:statusmsg
-                id="generic-error"
-                class="error">
-                <__trans phrase="Your template changes have been saved.">
-                <mt:var name="error">
-            </mtapp:statusmsg>
-        <mt:else>
-            <mtapp:statusmsg
-                id="saved"
-                class="success">
-                <__trans phrase="Your template changes have been saved.">
-                <mt:unless name="build_dynamic">
-                <mt:unless name="build_type_0">
-                    <mt:if name="has_rebuild">
-                        <mt:if name="can_rebuild">
-                            <__trans phrase="<a href="[_1]" class="rebuild-link">Publish</a> this template." params="<mt:var name="script_url">?__mode=start_rebuild&amp;blog_id=<mt:var name="blog_id" escape="url">&amp;next=0&amp;type=index-<mt:var name="id" escape="url">&amp;tmpl_id=<mt:var name="id" escape="url">&amp;single_template=1'"></a>
-                        </mt:if>
-                    </mt:if>
-                </mt:unless>
-                </mt:unless>
-            </mtapp:statusmsg>
-        </mt:if>
-    <mt:else>
-        <mt:if name="error">
-            <mtapp:statusmsg
-                id="generic-error"
-                class="error">
-                <mt:var name="error">
-            </mtapp:statusmsg>
-        </mt:if>
+        <mtapp:statusmsg
+            id="saved"
+            class="success">
+            <__trans phrase="Your custom CSS changes have been saved.">
+        </mtapp:statusmsg>
     </mt:if>
     <mt:if name="message">
         <mtapp:statusmsg
@@ -67,6 +16,7 @@
         </mtapp:statusmsg>
     </mt:if>
 </mt:setvarblock>
+
 <mt:setvartemplate name="action_buttons">
     <button
         onclick="return validate(this.form);"
@@ -78,6 +28,7 @@
         ><__trans phrase="Save"></button>
     <div id="autosave-notification-<$mt:var name="bar_position" escape="html" default="top"$>" class="autosave-notification"></div>
 </mt:setvartemplate>
+
 <mt:setvarblock name="html_head" append="1">
 <script type="text/javascript" src="<mt:var name="static_uri">js/tc/client.js"></script>
 <script type="text/javascript">
@@ -178,10 +129,6 @@ TC.attachLoadEvent( init );
 <input type="hidden" name="blog_id" value="<mt:var name="blog_id" escape="html" default="0">" />
 <input type="hidden" name="type" value="<mt:var name="type" escape="html">" />
 <input type="hidden" name="__mode" value="custom_css_save" />
-<input type="hidden" name="_type" value="template" />
-<input type="hidden" name="rebuild" value="" />
-<input type="hidden" name="action_name" value="" />
-<input type="hidden" name="action_input" value="" />
 <input type="hidden" name="return_args" value="<mt:var name="return_args" escape="html">" />
 <input type="hidden" name="magic_token" value="<mt:var name="magic_token">" />
 
