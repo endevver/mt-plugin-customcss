@@ -147,5 +147,14 @@ sub save {
     return $app->call_return;
 }
 
+sub custom_css {
+    my ($ctx, $args) = @_;
+    my $blog   = $ctx->stash('blog');
+    my $plugin = MT->component('CustomCSS');
+    my $scope  = "blog:" . $blog->id;
+    return $plugin->get_config_value('custom_css',$scope);
+}
+
 1;
+
 __END__
